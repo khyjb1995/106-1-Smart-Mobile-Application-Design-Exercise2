@@ -1,6 +1,8 @@
 package com.example.khy_j.a410321171_exercise2;
 
+        import android.content.DialogInterface;
         import android.os.Bundle;
+        import android.support.v7.app.AlertDialog;
         import android.support.v7.app.AppCompatActivity;
         import android.view.MotionEvent;
         import android.view.View;
@@ -8,6 +10,7 @@ package com.example.khy_j.a410321171_exercise2;
         import android.widget.ArrayAdapter;
         import android.widget.Button;
         import android.widget.EditText;
+        import android.widget.ListView;
         import android.widget.RadioButton;
         import android.widget.RadioGroup;
         import android.widget.Spinner;
@@ -18,8 +21,11 @@ public class MainActivity extends AppCompatActivity {
     private Button btnView, btnClear;
     private EditText edtName;
     private RadioGroup radBlood;
+    private RadioButton radResult;
+    private ListView lstPrefer;
 
     String[] StrEdus= new String[] {""};
+    String[] StrDatas=new String[] {""};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,13 +63,51 @@ public class MainActivity extends AppCompatActivity {
         public void  onClick(View v){
             if(edtName.length() > 0)
             {
-
+                if(radBlood.getCheckedRadioButtonId() >= 0)
+                {
+                    if(spnEdu.getAdapter() != null)
+                    {
+                        AlertDialog.Builder adbView = new AlertDialog.Builder(MainActivity.this);
+                        adbView.setTitle("Confirm ?")
+                            .setIcon(R.mipmap.ic_launcher)
+                            .setMessage(
+                                edtName.getText().toString() + " with blood "
+                                + ((RadioButton) findViewById(radBlood.getCheckedRadioButtonId())).getText() + " and "
+                                + spnEdu.getSelectedItem().toString() + " degree\n")
+                            .setPositiveButton(
+                                "Save",
+                                new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        
+                                        Toast toast = Toast.makeText(MainActivity.this,"Information Save Successful!",Toast.LENGTH_LONG);
+                                        toast.show();
+                                        edtName.setText("");
+                                        radBlood.clearCheck();
+                                        spnEdu.setAdapter(null);
+                                    }
+                                }
+                            )
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                    }
+                    else
+                    {
+                        Toast toast = Toast.makeText(MainActivity.this,"Please select your EDUCATION!",Toast.LENGTH_LONG);
+                        toast.show();
+                    }
+                }
+                else
+                {
+                    Toast toast = Toast.makeText(MainActivity.this,"Please select your BLOOD!",Toast.LENGTH_LONG);
+                    toast.show();
+                }
             }
             else
             {
-                Toast toast = Toast.makeText(MainActivity.this,"Please type your name!",Toast.LENGTH_LONG);
+                Toast toast = Toast.makeText(MainActivity.this,"Please type your NAME!",Toast.LENGTH_LONG);
                 toast.show();
-                edtName.requestFocus();
             }
         }
     };
