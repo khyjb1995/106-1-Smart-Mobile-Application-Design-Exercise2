@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
             spnEdu.setAdapter(null);
             Toast toast = Toast.makeText(MainActivity.this,"Clear Success!",Toast.LENGTH_LONG);
             toast.show();
-
         }
     };
 
