@@ -1,20 +1,20 @@
 package com.example.khy_j.a410321171_exercise2;
 
-        import android.content.DialogInterface;
-        import android.os.Bundle;
-        import android.support.v7.app.AlertDialog;
-        import android.support.v7.app.AppCompatActivity;
-        import android.view.MotionEvent;
-        import android.view.View;
-        import android.widget.AdapterView;
-        import android.widget.ArrayAdapter;
-        import android.widget.Button;
-        import android.widget.EditText;
-        import android.widget.ListView;
-        import android.widget.RadioButton;
-        import android.widget.RadioGroup;
-        import android.widget.Spinner;
-        import android.widget.Toast;
+import android.content.DialogInterface;
+import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     private Spinner spnEdu;
@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     String[] StrDatas=new String[100];
     String[] strSelect = new String[]{"Select"};
     int intCount=0;
+    int remove;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,46 +77,46 @@ public class MainActivity extends AppCompatActivity {
                     {
                         AlertDialog.Builder adbView = new AlertDialog.Builder(MainActivity.this);
                         adbView.setTitle("Confirm to save?")
-                            .setIcon(R.mipmap.ic_launcher)
-                            .setMessage(
-                                edtName.getText().toString() + " with blood "
-                                + ((RadioButton) findViewById(radBlood.getCheckedRadioButtonId())).getText() + " and "
-                                + spnEdu.getSelectedItem().toString() + " degree\n")
-                            .setPositiveButton(
-                                "Save",
-                                new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                                        String[] strTemp = new String[++intCount];
-                                        strTemp[0] = "Entry " + intCount + ": "
-                                                + edtName.getText().toString() + " , "
-                                                + ((RadioButton) findViewById(radBlood.getCheckedRadioButtonId())).getText() + " , "
-                                                + spnEdu.getSelectedItem().toString();
-                                        for(int i1 = 1; i1 < intCount; i1++)
+                                .setIcon(R.mipmap.ic_launcher)
+                                .setMessage(
+                                        edtName.getText().toString() + " with blood "
+                                                + ((RadioButton) findViewById(radBlood.getCheckedRadioButtonId())).getText() + " and "
+                                                + spnEdu.getSelectedItem().toString() + " degree\n")
+                                .setPositiveButton(
+                                        "Save",
+                                        new DialogInterface.OnClickListener()
                                         {
-                                            strTemp[i1] = StrDatas[i1-1];
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                                String[] strTemp = new String[++intCount];
+                                                strTemp[0] = "Entry " + intCount + ": "
+                                                        + edtName.getText().toString() + " , "
+                                                        + ((RadioButton) findViewById(radBlood.getCheckedRadioButtonId())).getText() + " , "
+                                                        + spnEdu.getSelectedItem().toString();
+                                                for(int i1 = 1; i1 < intCount; i1++)
+                                                {
+                                                    strTemp[i1] = StrDatas[i1-1];
+                                                }
+                                                StrDatas = new String[intCount];
+                                                StrDatas = strTemp;
+
+                                                ArrayAdapter<String> adapterDatas = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,StrDatas);
+                                                lstData.setAdapter(adapterDatas);
+
+                                                Toast toast = Toast.makeText(MainActivity.this,"Information Save Successful!",Toast.LENGTH_LONG);
+                                                toast.show();
+
+                                                edtName.setText("");
+                                                radBlood.clearCheck();
+                                                ArrayAdapter<String> adapterSelects = new ArrayAdapter<String> (MainActivity.this,android.R.layout.simple_spinner_item,strSelect);
+                                                adapterSelects.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                spnEdu.setAdapter(adapterSelects);
+                                            }
                                         }
-                                        StrDatas = new String[intCount];
-                                        StrDatas = strTemp;
-
-                                        ArrayAdapter<String> adapterDatas = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,StrDatas);
-                                        lstData.setAdapter(adapterDatas);
-
-                                        Toast toast = Toast.makeText(MainActivity.this,"Information Save Successful!",Toast.LENGTH_LONG);
-                                        toast.show();
-
-                                        edtName.setText("");
-                                        radBlood.clearCheck();
-                                        ArrayAdapter<String> adapterSelects = new ArrayAdapter<String> (MainActivity.this,android.R.layout.simple_spinner_item,strSelect);
-                                        adapterSelects.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                        spnEdu.setAdapter(adapterSelects);
-                                    }
-                                }
-                            )
-                            .setNegativeButton("Cancel", null)
-                            .show();
+                                )
+                                .setNegativeButton("Cancel", null)
+                                .show();
                     }
                     else
                     {
@@ -153,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
             AlertDialog.Builder adbView = new AlertDialog.Builder(MainActivity.this);
+            remove = i;
             adbView.setTitle("Confirm to delete?")
                     .setIcon(R.mipmap.ic_launcher)
                     .setMessage(StrDatas[i])
@@ -162,13 +164,14 @@ public class MainActivity extends AppCompatActivity {
                             {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-
-                                    String[] strTemp = new String[--intCount];
-                                    for(int i1 = 0; i1 < intCount; i1++)
+                                    String[] strTemp = new String[intCount-1];
+                                    for(int i1 = 0; i1 < intCount-1; i1++)
                                     {
-                                        strTemp[i1] = StrDatas[i1+1];
+                                        if(i1 < remove) strTemp[i1] = StrDatas[i1];
+                                        else strTemp[i1] = StrDatas[i1+1];
                                     }
-                                    StrDatas = new String[intCount];
+
+                                    StrDatas = new String[--intCount];
                                     StrDatas = strTemp;
 
                                     ArrayAdapter<String> adapterDatas = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,StrDatas);
